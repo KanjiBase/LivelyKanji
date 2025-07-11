@@ -1,0 +1,9 @@
+{
+"imgSelect": {
+    "type": "folderDropdown",
+    "value": "default.json",
+    "text": "KanTanJi JSON Pack",
+    "filter": "*.json",
+    "folder": "kanjibase"
+  }
+}

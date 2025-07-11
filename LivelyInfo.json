@@ -1,0 +1,14 @@
+{
+  "AppVersion": "0.0.1",
+  "Title": "Lively KanTanJi",
+  "Thumbnail": "thumbnail.png",
+  "Preview": "",
+  "Desc": "Kanji Learning Wallpaper",
+  "Author": "Jirka",
+  "License": null,
+  "Contact": "https://github.com/KanjiBase/LivelyKanji",
+  "Type": 1,
+  "FileName": "index.html",
+  "Arguments": "",
+  "IsAbsolutePath": false
+}
