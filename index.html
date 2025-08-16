@@ -61,7 +61,7 @@
 
     ruby rt {
       font-size: 0.5em;
-      color: #919090;
+      color: #c7c7c7;
     }
   </style>
 </head>
@@ -125,8 +125,18 @@
       return arr[Math.floor(getRand() * arr.length)];
     }
 
-    function renderFurigana(tango) {
-      return tango.replace(/(.?)<(.+?)>/g, '<ruby>$1<rt>$2</rt></ruby>');
+    function renderFurigana(text) {
+      // Step 1: match full pairs and replace them
+      text = text.replace(
+        /[<＜]([一-龠ぁ-ゔ0-9０-９々〆〇\s]+)[>＞][<＜]([一-龠ぁ-ゔ0-9０-９々〆〇\s]+)[>＞]/g,
+        '<ruby>$1<rt>$2</rt></ruby>'
+      );
+
+      // Step 2: match single character + furigana
+      return text.replace(
+        /([一-龠ぁ-ゔ0-9０-９々〆〇\s])(?:[<＜]([一-龠ぁ-ゔ0-9０-９々〆〇\s]+)[>＞])/g,
+        '<ruby>$1<rt>$2</rt></ruby>'
+      );
     }
 
     function pickRandomBackground() {
@@ -199,10 +209,19 @@
       return { x: 10, y: screenH - 60 };
     }
 
+    let vocabIndex = 0;
+    let lastUpdate = Date.now();
     function showRandomVocab() {
       if (!currentKanji || !currentKanji.vocab) return;
-      const vocabEntry = pickRandom(currentKanji.vocab);
-      const vocabHTML = `${renderFurigana(vocabEntry.tango)} — ${vocabEntry.imi}`;
+      const vocabEntry = currentKanji.vocab[vocabIndex++];
+      // no more words or too long since last update
+      if (!vocabEntry || lastUpdate + 21600000 < Date.now()) {
+        vocabIndex = 0;
+        updateKanji();
+        return;
+      }
+
+      const vocabHTML = `${renderFurigana(vocabEntry.tango)}<br>${vocabEntry.imi}`;
       vocabDiv.innerHTML = vocabHTML;
 
       const exclude = kanjiPositions[currentKanji.kanji];
@@ -212,13 +231,12 @@
       vocabDiv.style.top = `${pos.y}px`;
       vocabDiv.style.opacity = 1;
 
-      setTimeout(() => {
-        vocabDiv.style.opacity = 0;
-      }, 900000);
+      //setTimeout(() => {
+      //  vocabDiv.style.opacity = 0;
+      //}, 900000);
     }
 
     updateKanji();
-    setInterval(updateKanji, 3600000);
     setInterval(showRandomVocab, 450000);
   </script>
 </body>
